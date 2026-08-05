@@ -27,7 +27,8 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "ws": "^8.18.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "serverless-http": "^2.8.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -48,3 +49,4 @@
     "typescript": "^5.5.3"
   }
 }
+

@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "AiR Backend API",
+    "_postman_id": "",
+    "description": "Postman collection for AIESEC in Rwanda backend API (auto-generated). Variables: {{baseUrl}}, {{authToken}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Home - GET /api/home",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/home", "host": ["{{baseUrl}}"], "path": ["api","home"] }
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/home" },
+          "status": "200 OK",
+          "code": 200,
+          "_body": "{ \"success\": true, \"data\": { \"stats\": [], \"testimonials\": [] } }",
+          "body": "{ \"success\": true, \"data\": { \"stats\": [], \"testimonials\": [] } }"
+        }
+      ]
+    },
+    {
+      "name": "About - GET /api/about",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/about", "host": ["{{baseUrl}}"], "path": ["api","about"] } },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/about" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": {} }" } ]
+    },
+    {
+      "name": "Auth - Register POST /api/auth/register",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Admin User\",\n  \"email\": \"admin@aiesec.rw\",\n  \"password\": \"ChangeThisPassword123\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"] }
+      },
+      "response": [ { "name": "201 Created", "originalRequest": { "method": "POST" }, "status": "201 Created", "code": 201, "body": "{ \"success\": true, \"message\": \"Registered\", \"data\": {} }" } ]
+    },
+    {
+      "name": "Auth - Login POST /api/auth/login",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@aiesec.rw\",\n  \"password\": \"ChangeThisPassword123\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+      },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "POST" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"token\": \"<jwt-token>\" }" } ]
+    },
+    {
+      "name": "Auth - Me GET /api/auth/me (requires auth)",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{authToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api","auth","me"] }
+      },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": { \"id\": \"admin1\", \"email\": \"admin@aiesec.rw\" } }" } ]
+    },
+    {
+      "name": "Applications - Submit POST /api/applications",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"applicationType\": \"exchange\",\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"countryOfOrigin\": \"France\",\n  \"programOfInterest\": \"Cultural Exchange\",\n  \"preferredStartDate\": \"2026-09-01\",\n  \"motivation\": \"I want to build leadership skills through this exchange.\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/applications", "host": ["{{baseUrl}}"], "path": ["api","applications"] }
+      },
+      "response": [ { "name": "201 Created", "originalRequest": { "method": "POST" }, "status": "201 Created", "code": 201, "body": "{ \"success\": true, \"message\": \"Application received.\", \"data\": { \"id\": \"abc123\" } }" } ]
+    },
+    {
+      "name": "Applications - Admin list GET /api/applications/admin (requires auth)",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{authToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/api/applications/admin", "host": ["{{baseUrl}}"], "path": ["api","applications","admin"] }
+      },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": [] }" } ]
+    },
+    {
+      "name": "Donations - Create POST /api/donations",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"John Smith\",\n  \"email\": \"john@example.com\",\n  \"amount\": 50,\n  \"currency\": \"USD\",\n  \"frequency\": \"one-time\",\n  \"dedicateGift\": false\n}" },
+        "url": { "raw": "{{baseUrl}}/api/donations", "host": ["{{baseUrl}}"], "path": ["api","donations"] }
+      },
+      "response": [ { "name": "201 Created", "originalRequest": { "method": "POST" }, "status": "201 Created", "code": 201, "body": "{ \"success\": true, \"message\": \"Donation initiated.\", \"data\": { \"id\": \"d1\", \"status\": \"pending\" } }" } ]
+    },
+    {
+      "name": "Donations - Confirm PATCH /api/donations/:id/confirm",
+      "request": {
+        "method": "PATCH",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"paymentReference\": \"ref_123\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/donations/:id/confirm", "host": ["{{baseUrl}}"], "path": ["api","donations",":id","confirm"] }
+      },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "PATCH" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": { \"id\": \"d1\", \"status\": \"completed\" } }" } ]
+    },
+    {
+      "name": "Partner Leads - Submit POST /api/partner-leads",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"organizationName\": \"Acme Corp\",\n  \"contactPerson\": \"Alice\",\n  \"email\": \"alice@acme.com\",\n  \"partnershipType\": \"Technology\",\n  \"message\": \"We'd like to partner on youth programs.\",\n  \"source\": \"for_partners_page\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/partner-leads", "host": ["{{baseUrl}}"], "path": ["api","partner-leads"] }
+      },
+      "response": [ { "name": "201 Created", "originalRequest": { "method": "POST" }, "status": "201 Created", "code": 201, "body": "{ \"success\": true, \"message\": \"Thanks for reaching out\", \"data\": { \"id\": \"pl1\" } }" } ]
+    },
+    {
+      "name": "Alumni - List GET /api/alumni",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/alumni", "host": ["{{baseUrl}}"], "path": ["api","alumni"] } },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": [] }" } ]
+    },
+    {
+      "name": "Alumni - Profile GET /api/alumni/:id",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/alumni/:id", "host": ["{{baseUrl}}"], "path": ["api","alumni",":id"] } },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": { \"id\": \"alum1\" } }" } ]
+    },
+    {
+      "name": "Alumni - Connect POST /api/alumni/:id/connect (requires auth)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{authToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/api/alumni/:id/connect", "host": ["{{baseUrl}}"], "path": ["api","alumni",":id","connect"] }
+      },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "POST" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true }" } ]
+    },
+    {
+      "name": "Alumni - Follow POST /api/alumni/:id/follow (requires auth)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{authToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/api/alumni/:id/follow", "host": ["{{baseUrl}}"], "path": ["api","alumni",":id","follow"] }
+      },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "POST" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true }" } ]
+    },
+    {
+      "name": "Alumni - Register POST /api/alumni/register",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"New Grad\",\n  \"email\": \"grad@example.com\",\n  \"graduationYear\": 2024\n}" },
+        "url": { "raw": "{{baseUrl}}/api/alumni/register", "host": ["{{baseUrl}}"], "path": ["api","alumni","register"] }
+      },
+      "response": [ { "name": "201 Created", "originalRequest": { "method": "POST" }, "status": "201 Created", "code": 201, "body": "{ \"success\": true, \"data\": { \"id\": \"reg1\", \"status\": \"pending\" } }" } ]
+    },
+    {
+      "name": "Stories - List GET /api/stories",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/stories", "host": ["{{baseUrl}}"], "path": ["api","stories"] } },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": [] }" } ]
+    },
+    {
+      "name": "Stories - Single GET /api/stories/:slug",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/stories/:slug", "host": ["{{baseUrl}}"], "path": ["api","stories",":slug"] } },
+      "response": [ { "name": "200 OK", "originalRequest": { "method": "GET" }, "status": "200 OK", "code": 200, "body": "{ \"success\": true, \"data\": {} }" } ]
+    },
+    {
+      "name": "Upload - POST /api/admin/upload (file, requires auth)",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{authToken}}" } ],
+        "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": [] } ] },
+        "url": { "raw": "{{baseUrl}}/api/admin/upload", "host": ["{{baseUrl}}"], "path": ["api","admin","upload"] }
+      },
+      "response": [ { "name": "201 Created", "originalRequest": { "method": "POST" }, "status": "201 Created", "code": 201, "body": "{ \"success\": true, \"data\": { \"fileUrl\": \"/uploads/example.jpg\" } }" } ]
+    },
+    {
+      "name": "Content - Generic CRUD templates (replace {resource})",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/{resource}", "host": ["{{baseUrl}}"], "path": ["api","{resource}"] },
+        "description": "Replace {resource} with one of: committee-members, local-committees, history, stats, testimonials, programs, faqs, partnership-opportunities, partner-success-stories, alumni-success-stories, impact-reports"
+      }
+    }
+  ]
+}

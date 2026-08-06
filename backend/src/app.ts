@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -84,4 +84,19 @@ export const createApp = (): Application => {
   app.use(errorHandler);
 
   return app;
+};
+
+let cachedApp: Application | null = null;
+
+const getOrCreateApp = (): Application => {
+  if (!cachedApp) {
+    cachedApp = createApp();
+  }
+  return cachedApp;
+};
+
+// Vercel may auto-detect src/app.ts as the function entrypoint.
+// Export a request handler so either entry shape works.
+export default (req: Request, res: Response): void => {
+  getOrCreateApp()(req, res);
 };

@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-ink-heading antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-bold;
+    /* Inherit color instead of forcing ink-heading, so headings on dark
+       (text-white) sections pick up the right color from their ancestor. */
+    color: inherit;
+  }
+
+  a,
+  button {
+    @apply outline-none;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    @apply ring-2 ring-offset-2 ring-primary rounded-card;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-[1440px] px-6 md:px-10 lg:px-16;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-card px-6 py-3 text-sm font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent-yellow text-ink-heading hover:bg-accent-yellow-dark;
+  }
+
+  .btn-blue {
+    @apply btn bg-primary text-white hover:bg-primary-dark;
+  }
+
+  .btn-outline-white {
+    @apply btn border border-white text-white hover:bg-white/10;
+  }
+
+  .btn-outline {
+    @apply btn border border-border text-ink-heading hover:bg-surface-light;
+  }
+
+  .card {
+    @apply rounded-card border border-border bg-white transition-shadow duration-150 hover:shadow-md;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink-heading;
+  }
+
+  .field-input {
+    @apply w-full rounded-card border border-border bg-white px-4 py-2.5 text-sm text-ink-heading placeholder:text-ink-body focus:border-primary;
+  }
+}

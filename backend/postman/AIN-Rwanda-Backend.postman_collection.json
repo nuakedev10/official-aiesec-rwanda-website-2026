@@ -1,0 +1,2638 @@
+{
+  "info": {
+    "_postman_id": "dedd7ef4-630a-454c-a26b-79294e0b0795",
+    "name": "AIESEC in Rwanda \u2014 Backend API",
+    "description": "Full API for the AIESEC in Rwanda website backend (Node.js + Express + TypeScript + Neon Postgres via Drizzle ORM).\n\n## Getting started\n1. Set the `baseUrl` variable (collection Variables tab, or use the provided environment) to your local server (`http://localhost:5000/api`) or your deployed Vercel URL (`https://ain-rwanda-backend.vercel.app/api`).\n2. Run **Auth > Login** with the seeded admin account (`admin@aiesec.rw` / whatever you set during seeding). Its test script automatically saves the returned JWT into the `token` variable \u2014 every admin-only request in this collection already references `{{token}}`, so nothing else to configure.\n3. Public GET endpoints (page aggregators, content lists) work with no auth at all.\n\nEndpoints are grouped by the page they power on the actual site, matching the backend README.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": null,
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (create admin/committee account)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Public route, but in practice should be locked down operationally (only run this yourself to create committee accounts) \u2014 see README.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Collins Amabuo\",\n  \"email\": \"collins@aiesec.rw\",\n  \"password\": \"changeMe123\",\n  \"role\": \"MCVP\",\n  \"position\": \"MCVP MKT/PR/IM\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login (admin/committee account)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Public. Returns a JWT. This request's Tests tab auto-saves the token into {{token}} for every other admin-only request in this collection.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@aiesec.rw\",\n  \"password\": \"ChangeThisPassword123\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const data = pm.response.json();",
+                  "    if (data.token) {",
+                  "        pm.collectionVariables.set('token', data.token);",
+                  "        console.log('Token saved to {{token}}');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get my profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Requires a valid token.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Public. Confirms the API and its database connection are up."
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Home Page",
+      "item": [
+        {
+          "name": "Get home page data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home"
+              ]
+            },
+            "description": "Public. Impact stats + featured testimonials, one call."
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Home \u2014 Testimonials",
+      "item": [
+        {
+          "name": "List Home \u2014 Testimonials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "testimonials"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one Home \u2014 Testimonial",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "testimonials",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Home \u2014 Testimonial",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "testimonials"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jean\",\n  \"role\": \"Bank of Kigali HR Director\",\n  \"quote\": \"Partnering with AIESEC has given us access to exceptional young talent.\",\n  \"rating\": 5,\n  \"isFeatured\": true,\n  \"order\": 4\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Home \u2014 Testimonial",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "testimonials",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quote\": \"Updated quote text\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Home \u2014 Testimonial",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/testimonials/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "testimonials",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "About Page",
+      "item": [
+        {
+          "name": "Get about page data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/about",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "about"
+              ]
+            },
+            "description": "Public. MC members, LC members, local committees, history, network stats \u2014 one call."
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "About \u2014 Committee Members",
+      "item": [
+        {
+          "name": "List About \u2014 Committee Members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/committee-members?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "committee-members"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one About \u2014 Committee Member",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/committee-members/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "committee-members",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create About \u2014 Committee Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/committee-members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "committee-members"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"New Member\",\n  \"position\": \"MCVP Talent Management\",\n  \"committeeLevel\": \"MC\",\n  \"order\": 8\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update About \u2014 Committee Member",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/committee-members/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "committee-members",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"position\": \"MCVP Talent Management & Corporate Relations\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete About \u2014 Committee Member",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/committee-members/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "committee-members",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "About \u2014 Local Committees",
+      "item": [
+        {
+          "name": "List About \u2014 Local Committees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/local-committees?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "local-committees"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one About \u2014 Local Committee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/local-committees/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "local-committees",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create About \u2014 Local Committee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/local-committees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "local-committees"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AIESEC Rubavu\",\n  \"region\": \"Western region committee\",\n  \"iconKey\": \"wave\",\n  \"order\": 4\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update About \u2014 Local Committee",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/local-committees/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "local-committees",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete About \u2014 Local Committee",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/local-committees/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "local-committees",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "About \u2014 History Timeline",
+      "item": [
+        {
+          "name": "List About \u2014 History Timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/history?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one About \u2014 History Timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/history/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create About \u2014 History Timeline",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"year\": \"2025\",\n  \"title\": \"New Milestone\",\n  \"description\": \"Description of what happened.\",\n  \"order\": 5\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update About \u2014 History Timeline",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/history/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete About \u2014 History Timeline",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/history/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "history",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "About \u2014 Site Stats",
+      "item": [
+        {
+          "name": "List About \u2014 Site Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stats?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stats"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one About \u2014 Site Stat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stats/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stats",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create About \u2014 Site Stat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stats"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN only). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"new_metric\",\n  \"label\": \"New Metric\",\n  \"value\": \"42\",\n  \"page\": \"about\",\n  \"order\": 5\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update About \u2014 Site Stat",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stats/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stats",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN only). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"45\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete About \u2014 Site Stat",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stats/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stats",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN only).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "For Youth \u2014 Programs",
+      "item": [
+        {
+          "name": "List For Youth \u2014 Programs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/programs?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "programs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one For Youth \u2014 Program",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/programs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "programs",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create For Youth \u2014 Program",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/programs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "programs"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"global-talent\",\n  \"title\": \"Global Talent\",\n  \"type\": \"outgoing\",\n  \"description\": \"Professional internships abroad.\",\n  \"features\": [\n    \"6-78 week placements\",\n    \"Paid positions\",\n    \"Career-track experience\"\n  ],\n  \"ctaLabel\": \"Explore Opportunities\",\n  \"order\": 3\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update For Youth \u2014 Program",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/programs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "programs",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete For Youth \u2014 Program",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/programs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "programs",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "For Youth \u2014 FAQs",
+      "item": [
+        {
+          "name": "List For Youth \u2014 FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/faqs?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faqs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one For Youth \u2014 FAQ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/faqs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faqs",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create For Youth \u2014 FAQ",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/faqs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faqs"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Is there a cost to join?\",\n  \"answer\": \"Membership fees vary by Local Committee \\u2014 ask your LC for specifics.\",\n  \"category\": \"youth\",\n  \"order\": 5\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update For Youth \u2014 FAQ",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/faqs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faqs",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answer\": \"Updated answer text\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete For Youth \u2014 FAQ",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/faqs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "faqs",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "For Partners \u2014 Partnership Opportunities",
+      "item": [
+        {
+          "name": "List For Partners \u2014 Partnership Opportunities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partnership-opportunities?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partnership-opportunities"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one For Partners \u2014 Partnership Opportunitie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partnership-opportunities/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partnership-opportunities",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create For Partners \u2014 Partnership Opportunitie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/partnership-opportunities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partnership-opportunities"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Talent Partners\",\n  \"description\": \"Access AIESEC's youth talent pipeline for hiring.\",\n  \"features\": [\n    \"Priority candidate access\",\n    \"Employer branding\",\n    \"Campus visibility\"\n  ],\n  \"ctaLabel\": \"Apply Now\",\n  \"order\": 3\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update For Partners \u2014 Partnership Opportunitie",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/partnership-opportunities/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partnership-opportunities",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete For Partners \u2014 Partnership Opportunitie",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partnership-opportunities/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partnership-opportunities",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "For Partners \u2014 Success Stories",
+      "item": [
+        {
+          "name": "List For Partners \u2014 Success Stories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partner-success-stories?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-success-stories"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one For Partners \u2014 Success Storie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partner-success-stories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-success-stories",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create For Partners \u2014 Success Storie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/partner-success-stories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-success-stories"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Bank of Kigali\",\n  \"quote\": \"AIESEC talent consistently exceeds expectations.\",\n  \"metricValue\": \"40+\",\n  \"metricLabel\": \"Hires via AIESEC\",\n  \"order\": 4\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update For Partners \u2014 Success Storie",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/partner-success-stories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-success-stories",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quote\": \"Updated quote\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete For Partners \u2014 Success Storie",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partner-success-stories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-success-stories",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "For Partners \u2014 Leads (Get in Touch)",
+      "item": [
+        {
+          "name": "Submit partner lead (For Partners page)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/partner-leads",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-leads"
+              ]
+            },
+            "description": "Public. Same endpoint also used by the Contact page's 'Partner With Us' tab \u2014 just change source to contact_page.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organizationName\": \"Bank of Kigali\",\n  \"contactPerson\": \"Jean Mugabo\",\n  \"email\": \"jean@bk.rw\",\n  \"phone\": \"+250788000000\",\n  \"partnershipType\": \"Corporate Sponsorship\",\n  \"message\": \"We would like to explore a talent partnership.\",\n  \"source\": \"for_partners_page\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List partner leads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/partner-leads/admin?status=new&source=for_partners_page&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-leads",
+                "admin"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "new",
+                  "disabled": true
+                },
+                {
+                  "key": "source",
+                  "value": "for_partners_page",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update partner lead status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/partner-leads/admin/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "partner-leads",
+                "admin",
+                ":id",
+                "status"
+              ]
+            },
+            "description": "status: new | contacted | in_discussion | closed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"contacted\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Contact \u2014 Apply Now (Applications)",
+      "item": [
+        {
+          "name": "Submit application (Exchange or Membership)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "applications"
+              ]
+            },
+            "description": "Public. applicationType: exchange | membership",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"applicationType\": \"exchange\",\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"countryOfOrigin\": \"France\",\n  \"programOfInterest\": \"Cultural Exchange\",\n  \"preferredStartDate\": \"2026-09-01\",\n  \"motivation\": \"I want to build leadership skills through this exchange and give back to the host community.\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List applications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/applications/admin?type=exchange&status=new&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "applications",
+                "admin"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "exchange",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "new",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update application status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/applications/admin/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "applications",
+                "admin",
+                ":id",
+                "status"
+              ]
+            },
+            "description": "status: new | reviewing | accepted | rejected",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"reviewing\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Contact \u2014 Support & Donate",
+      "item": [
+        {
+          "name": "Create donation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/donations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "donations"
+              ]
+            },
+            "description": "Public. Creates a PENDING record only \u2014 see README 'Payments' section. frequency: one-time | monthly",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Smith\",\n  \"email\": \"john@example.com\",\n  \"amount\": 50,\n  \"currency\": \"USD\",\n  \"frequency\": \"one-time\",\n  \"dedicateGift\": false\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm donation (payment gateway webhook)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/donations/:id/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "donations",
+                ":id",
+                "confirm"
+              ]
+            },
+            "description": "Called by your payment gateway's webhook once payment actually clears, or manually by an admin for an offline gift.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentReference\": \"flw_ref_123456\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List donations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/donations/admin?status=completed&frequency=monthly&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "donations",
+                "admin"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "disabled": true
+                },
+                {
+                  "key": "frequency",
+                  "value": "monthly",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Alumni \u2014 Directory",
+      "item": [
+        {
+          "name": "List alumni (Find Alumni filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni?generation=2018&industry=Technology&location=San Francisco, CA&roleLevel=senior&q=product manager&page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni"
+              ],
+              "query": [
+                {
+                  "key": "generation",
+                  "value": "2018",
+                  "disabled": true
+                },
+                {
+                  "key": "industry",
+                  "value": "Technology",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "San Francisco, CA",
+                  "disabled": true
+                },
+                {
+                  "key": "roleLevel",
+                  "value": "senior",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "product manager",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. All query params optional and combine with AND logic. roleLevel: entry | mid | senior | executive"
+          },
+          "response": []
+        },
+        {
+          "name": "Get alumni profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni",
+                ":id"
+              ]
+            },
+            "description": "Public."
+          },
+          "response": []
+        },
+        {
+          "name": "Connect with alumni",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni/:id/connect",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni",
+                ":id",
+                "connect"
+              ]
+            },
+            "description": "Requires auth. 409 if already connected.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Follow alumni",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni/:id/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni",
+                ":id",
+                "follow"
+              ]
+            },
+            "description": "Requires auth. 409 if already following.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register as new alumni",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/alumni/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni",
+                "register"
+              ]
+            },
+            "description": "Public. Creates a PENDING registration for an admin to review and promote to a full profile.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"New Graduate\",\n  \"email\": \"newgrad@example.com\",\n  \"graduationYear\": 2024\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List alumni registrations (pending)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni/admin/registrations?status=pending&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni",
+                "admin",
+                "registrations"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Alumni \u2014 Success Stories",
+      "item": [
+        {
+          "name": "List Alumni \u2014 Success Stories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni-success-stories?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni-success-stories"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one Alumni \u2014 Success Storie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni-success-stories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni-success-stories",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Alumni \u2014 Success Storie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/alumni-success-stories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni-success-stories"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Building a Social Enterprise\",\n  \"excerpt\": \"How one alumna turned her exchange experience into a nonprofit.\",\n  \"alumniName\": \"Grace Uwase\",\n  \"order\": 3\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Alumni \u2014 Success Storie",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/alumni-success-stories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni-success-stories",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"excerpt\": \"Updated excerpt\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Alumni \u2014 Success Storie",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alumni-success-stories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alumni-success-stories",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Stories \u2014 Exchange Diaries & Leadership Stories",
+      "item": [
+        {
+          "name": "List stories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stories?category=Exchange Diary&q=leadership&page=1&limit=9",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stories"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Exchange Diary",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "leadership",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "9",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. category: 'Exchange Diary' | 'Leadership Story'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get story by slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stories/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stories",
+                ":slug"
+              ]
+            },
+            "description": "Public. 'Read More' on an individual story."
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Stories \u2014 Impact Reports",
+      "item": [
+        {
+          "name": "List Stories \u2014 Impact Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/impact-reports?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "impact-reports"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public. Paginated list, ordered by display order."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one Stories \u2014 Impact Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/impact-reports/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "impact-reports",
+                ":id"
+              ]
+            },
+            "description": "Public. Replace :id with a real UUID from the List response."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Stories \u2014 Impact Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/impact-reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "impact-reports"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Requires a Bearer token \u2014 run Auth > Login first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Mid-Year Report 2026\",\n  \"description\": \"Programme outcomes for the first half of 2026.\",\n  \"fileUrl\": \"https://your-blob-url.public.blob.vercel-storage.com/mid-year-2026.pdf\",\n  \"publishedAt\": \"2026-07-01\",\n  \"order\": 3\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Stories \u2014 Impact Report",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/impact-reports/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "impact-reports",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP). Partial update \u2014 send only the fields you're changing.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Stories \u2014 Impact Report",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/impact-reports/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "impact-reports",
+                ":id"
+              ]
+            },
+            "description": "Admin only (SUPER_ADMIN / MCP / MCVP).",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "Upload file (committee photo / story cover / report PDF)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "upload"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Admin only. multipart/form-data, field name must be 'file'. Returns { fileUrl } from Vercel Blob \u2014 paste that URL into the relevant photoUrl/coverImageUrl/fileUrl field on the matching create/update request."
+          },
+          "response": []
+        }
+      ],
+      "description": ""
+    }
+  ]
+}

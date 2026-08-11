@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getImpactReports, getImpactStats, getStories } from '@/lib/api';
 import SectionHeading from '@/components/SectionHeading';
@@ -29,13 +30,20 @@ export default async function StoriesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative bg-surface-dark py-24 text-white">
-        <div className="absolute inset-0 opacity-40">
-          <SiteImage alt="" className="h-full w-full" fill />
+      <section className="relative bg-surface-dark py-28 text-white">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero/stories-hero.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-30"
+            priority
+          />
         </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
         <div className="container-page relative max-w-2xl">
-          <h1 className="text-h1-mobile sm:text-h1">Stories That Inspire Change</h1>
-          <p className="mt-6 text-base leading-relaxed text-gray-300 sm:text-lg">
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">Stories That Inspire Change</h1>
+          <p className="mt-6 text-lg leading-relaxed text-gray-300">
             Read first-hand accounts of exchanges, leadership, and impact from the AIESEC in
             Rwanda community.
           </p>
@@ -50,18 +58,30 @@ export default async function StoriesPage() {
         </div>
       </section>
 
-      {/* Stories grid */}
-      <section id="stories" className="container-page py-20">
+      {/* Stories grid — images are portrait (1170×1463), show them fully */}
+      <section id="stories" className="container-page py-24">
         <SectionHeading eyebrow="From Our Community" title="Exchange Diaries & Leadership Stories" />
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {stories.map((story) => (
-            <article key={story.id} className="card overflow-hidden">
-              <SiteImage
-                src={story.coverImageUrl ?? undefined}
-                alt={story.title}
-                label={story.category}
-                className="h-44 w-full"
-              />
+            <article key={story.id} className="card group overflow-hidden">
+              <div className="relative w-full overflow-hidden">
+                {story.coverImageUrl ? (
+                  <Image
+                    src={story.coverImageUrl}
+                    alt={story.title}
+                    width={1170}
+                    height={1463}
+                    className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  />
+                ) : (
+                  <SiteImage
+                    alt={story.title}
+                    label={story.category}
+                    className="aspect-[4/5] w-full"
+                  />
+                )}
+              </div>
               <div className="p-6">
                 <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                   {story.category}
@@ -77,9 +97,10 @@ export default async function StoriesPage() {
                 <p className="mt-2 text-sm leading-relaxed text-ink-body">{story.excerpt}</p>
                 <Link
                   href={`/stories/${story.slug}`}
-                  className="mt-4 inline-block text-sm font-semibold text-primary hover:underline"
+                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary-dark"
                 >
-                  Read More →
+                  Read More
+                  <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
                 </Link>
               </div>
             </article>
@@ -88,7 +109,7 @@ export default async function StoriesPage() {
       </section>
 
       {/* Impact reports & stats */}
-      <section className="bg-surface-light py-20">
+      <section className="bg-surface-light py-24">
         <div className="container-page">
           <SectionHeading eyebrow="The Numbers" title="Impact Reports & Statistics" />
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
@@ -124,11 +145,11 @@ export default async function StoriesPage() {
               </ul>
             </div>
 
-            <div className="card flex flex-col items-center justify-center gap-4 bg-surface-dark p-6 text-center">
+            <div className="card flex flex-col items-center justify-center gap-4 bg-surface-dark p-8 text-center">
               <p className="text-sm font-semibold text-white">
                 An Exchange Participant&apos;s Reflection
               </p>
-              <div className="relative aspect-[9/16] w-full max-w-[220px] overflow-hidden rounded-card bg-black">
+              <div className="relative aspect-[9/16] w-full max-w-[240px] overflow-hidden rounded-2xl bg-black">
                 <video
                   className="h-full w-full object-cover"
                   src="/videos/exchange-story-portrait.mp4"

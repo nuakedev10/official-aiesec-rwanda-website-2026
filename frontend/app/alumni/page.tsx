@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getAlumni, getAlumniSuccessStories } from '@/lib/api';
@@ -39,11 +40,16 @@ export default async function AlumniPage() {
               </Link>
             </div>
           </div>
-          <SiteImage
-            alt="AIESEC in Rwanda alumni reconnecting at a networking event"
-            label="Photo: alumni networking event"
-            className="h-72 w-full rounded-card sm:h-96"
-          />
+          <div className="relative h-72 w-full overflow-hidden rounded-2xl sm:h-96">
+            <Image
+              src="/images/alumni/alumni-1.jpg"
+              alt="AIESEC in Rwanda alumni reconnecting at a networking event"
+              fill
+              className="object-cover"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              priority
+            />
+          </div>
         </div>
       </section>
 

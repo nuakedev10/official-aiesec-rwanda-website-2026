@@ -5,3 +5,9 @@ uploads/
 *.log
 .next/
 next-env.d.ts
+
+# Source assets folder (large videos/images) — only public/ copies are deployed
+frontend/aiesec_images&videos/
+
+# Large video — add back after compressing with ffmpeg
+frontend/public/videos/home-hero.mp4

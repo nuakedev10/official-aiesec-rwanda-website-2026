@@ -50,11 +50,14 @@ export default function Footer() {
     <footer className="bg-surface-dark text-gray-300">
       <div className="container-page grid grid-cols-1 gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="mb-4 flex items-center gap-2.5">
-            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-card">
-              <Image src="/images/logo.jpg" alt="" fill sizes="36px" className="object-cover" />
-            </span>
-            <span className="text-lg font-bold text-white">AIESEC Rwanda</span>
+          <div className="mb-4">
+            <Image
+              src="/images/aiesec-blue-logo.png"
+              alt="AIESEC"
+              width={140}
+              height={36}
+              className="h-8 w-auto object-contain brightness-0 invert"
+            />
           </div>
           <p className="mb-5 text-sm leading-relaxed text-gray-400">
             Developing leadership in young people through international internships, volunteer

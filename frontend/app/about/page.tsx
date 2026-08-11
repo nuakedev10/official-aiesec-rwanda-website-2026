@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getAbout } from '@/lib/api';
 import SectionHeading from '@/components/SectionHeading';
@@ -19,13 +20,20 @@ export default async function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative bg-surface-dark py-24 text-white">
-        <div className="absolute inset-0 opacity-40">
-          <SiteImage alt="" className="h-full w-full" fill />
+      <section className="relative bg-surface-dark py-28 text-white">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero/about-hero.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-30"
+            priority
+          />
         </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
         <div className="container-page relative max-w-3xl text-center sm:mx-auto">
-          <h1 className="text-h1-mobile sm:text-h1">About AIESEC in Rwanda</h1>
-          <p className="mt-6 text-base leading-relaxed text-gray-300 sm:text-lg">
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">About AIESEC in Rwanda</h1>
+          <p className="mt-6 text-lg leading-relaxed text-gray-300">
             We are a national chapter of the world&apos;s largest youth-led non-profit, developing
             leadership in young people through international exchanges and youth leadership
             programs across Rwanda.

@@ -46,86 +46,67 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-primary text-white">
-        {/* Decorative glow shapes */}
-        <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -right-16 top-1/3 h-96 w-96 rounded-full bg-accent-yellow/20 blur-3xl" />
+      {/* Hero — full-width video background */}
+      <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-surface-dark">
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/videos/home-hero.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label="AIESEC in Rwanda youth volunteers and members in action"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30" />
 
-        <div className="container-page relative grid gap-12 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-accent-yellow ring-1 ring-inset ring-white/20">
+        <div className="container-page relative z-10 py-24 lg:py-32">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-accent-yellow ring-1 ring-inset ring-white/20 backdrop-blur-sm">
               <IconSparkles size={14} />
               Youth-Led Since 2007
             </span>
-            <h1 className="mt-5 text-h1-mobile sm:text-h1">
-              Develop Leaders for a <span className="text-accent-yellow">Better Rwanda</span>
+            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Develop Leaders for a{' '}
+              <span className="text-accent-yellow">Better Rwanda</span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-blue-50 sm:text-lg">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">
               AIESEC in Rwanda builds the next generation of leaders through international
               internships, volunteer exchanges, and hands-on leadership development — for youth,
               partners, and communities across the country.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/get-involved" className="btn-primary">
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link href="/get-involved" className="btn-primary text-base">
                 Start Your Journey
               </Link>
-              <Link href="/for-partners" className="btn-outline-white">
+              <Link href="/for-partners" className="btn-outline-white text-base">
                 Partner With Us
               </Link>
             </div>
 
-            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-white/15 pt-8">
+            <dl className="mt-14 grid max-w-lg grid-cols-3 gap-8 border-t border-white/20 pt-8">
               {stats.slice(0, 3).map((stat) => (
                 <div key={stat.id}>
                   <dt className="sr-only">{stat.label}</dt>
-                  <dd className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</dd>
-                  <dd className="mt-1 text-xs text-blue-100 sm:text-sm">{stat.label}</dd>
+                  <dd className="text-3xl font-extrabold text-white sm:text-4xl">{stat.value}</dd>
+                  <dd className="mt-1 text-xs font-medium text-white/70 sm:text-sm">{stat.label}</dd>
                 </div>
               ))}
             </dl>
-          </div>
-
-          <div className="relative">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card shadow-2xl ring-1 ring-white/20 sm:aspect-video lg:aspect-[4/5]">
-              <video
-                className="h-full w-full object-cover"
-                src="/videos/home-hero.mp4"
-                poster="/images/hero/home-hero.png"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-label="AIESEC in Rwanda youth volunteers and members in action"
-              />
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            </div>
-
-            {/* Floating stat card */}
-            <div className="absolute -bottom-6 -left-4 hidden max-w-[220px] items-center gap-3 rounded-card bg-white p-4 shadow-xl sm:flex sm:-left-6">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <IconGlobe size={22} />
-              </span>
-              <div>
-                <p className="text-lg font-bold text-ink-heading">120+</p>
-                <p className="text-xs leading-tight text-ink-body">Countries in our global network</p>
-              </div>
-            </div>
           </div>
         </div>
 
         <a
           href="#pillars"
           aria-label="Scroll to explore"
-          className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 animate-bounce text-white/70 transition-colors hover:text-white lg:block"
+          className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 animate-bounce text-white/70 transition-colors hover:text-white lg:block"
         >
-          <IconArrowDown size={22} />
+          <IconArrowDown size={24} />
         </a>
       </section>
 
       {/* Pillar cards */}
-      <section id="pillars" className="container-page -mt-12 pb-4 sm:-mt-16">
+      <section id="pillars" className="container-page -mt-14 relative z-20 pb-4">
         <div className="grid gap-6 sm:grid-cols-3">
           <IconFeatureCard
             icon={<IconUsers size={26} />}
@@ -155,7 +136,7 @@ export default async function HomePage() {
       </section>
 
       {/* Impact stats */}
-      <section className="container-page py-20">
+      <section className="container-page py-24">
         <SectionHeading
           eyebrow="Our Impact"
           title="Our Impact in Numbers"
@@ -175,21 +156,21 @@ export default async function HomePage() {
       </section>
 
       {/* Transforming Rwanda */}
-      <section className="bg-surface-light py-20">
+      <section className="bg-surface-light py-24">
         <div className="container-page grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
             <SectionHeading
               title="Transforming Rwanda Through Youth Leadership"
               align="left"
             />
-            <ul className="space-y-4">
+            <ul className="space-y-5">
               {[
                 'Hands-on leadership experience through real, high-stakes responsibility.',
                 'International exposure through exchanges in over 120 countries.',
                 'A national community of alumni, partners, and youth working together.',
               ].map((point) => (
                 <li key={point} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-green/15 text-accent-green">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-green/15 text-accent-green">
                     <IconCheck size={14} />
                   </span>
                   <span className="text-sm leading-relaxed text-ink-heading sm:text-base">
@@ -202,7 +183,7 @@ export default async function HomePage() {
               Learn Our Story
             </Link>
           </div>
-          <div className="relative h-72 w-full overflow-hidden rounded-card shadow-lg sm:h-96">
+          <div className="relative h-80 w-full overflow-hidden rounded-2xl shadow-xl sm:h-[420px]">
             <Image
               src="/images/hero/home-hero.png"
               alt="AIESEC in Rwanda members in a leadership training session"
@@ -215,7 +196,7 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="container-page py-20">
+      <section className="container-page py-24">
         <SectionHeading eyebrow="Testimonials" title="What Our Community Says" />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((testimonial) => (
@@ -225,30 +206,30 @@ export default async function HomePage() {
       </section>
 
       {/* CTA banner */}
-      <section className="relative overflow-hidden bg-surface-dark py-20 text-white">
+      <section className="relative overflow-hidden bg-gradient-primary py-24 text-white">
         <div
           aria-hidden
-          className="absolute inset-0 opacity-[0.07]"
+          className="absolute inset-0 opacity-[0.06]"
           style={{
             backgroundImage:
               'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
-            backgroundSize: '22px 22px',
+            backgroundSize: '24px 24px',
           }}
         />
-        <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/30 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-white/10 blur-3xl" />
         <div className="container-page relative text-center">
-          <h2 className="mx-auto max-w-2xl text-h3 sm:text-h2">
+          <h2 className="mx-auto max-w-2xl text-3xl font-extrabold sm:text-4xl lg:text-5xl">
             Ready to Start Your Leadership Journey?
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-gray-300">
+          <p className="mx-auto mt-5 max-w-xl text-lg text-blue-100">
             Whether you want to volunteer abroad, partner with us, or give back as an alumnus —
             there is a place for you at AIESEC in Rwanda.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link href="/get-involved" className="btn-primary">
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Link href="/get-involved" className="btn-primary text-base">
               Apply Now
             </Link>
-            <Link href="/about" className="btn-outline-white">
+            <Link href="/about" className="btn-outline-white text-base">
               Learn More
             </Link>
           </div>

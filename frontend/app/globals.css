@@ -16,8 +16,6 @@
   h3,
   h4 {
     @apply font-bold;
-    /* Inherit color instead of forcing ink-heading, so headings on dark
-       (text-white) sections pick up the right color from their ancestor. */
     color: inherit;
   }
 
@@ -32,7 +30,11 @@
   textarea:focus-visible,
   select:focus-visible,
   [tabindex]:focus-visible {
-    @apply ring-2 ring-offset-2 ring-primary rounded-card;
+    @apply ring-2 ring-offset-2 ring-primary rounded-lg;
+  }
+
+  ::selection {
+    @apply bg-primary/15 text-primary;
   }
 }
 
@@ -42,27 +44,27 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-card px-6 py-3 text-sm font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-primary {
-    @apply btn bg-accent-yellow text-ink-heading hover:bg-accent-yellow-dark;
+    @apply btn bg-accent-yellow text-ink-heading shadow-sm hover:bg-accent-yellow-dark hover:shadow-md active:scale-[0.98];
   }
 
   .btn-blue {
-    @apply btn bg-primary text-white hover:bg-primary-dark;
+    @apply btn bg-primary text-white shadow-sm hover:bg-primary-dark hover:shadow-md active:scale-[0.98];
   }
 
   .btn-outline-white {
-    @apply btn border border-white text-white hover:bg-white/10;
+    @apply btn border border-white/40 text-white backdrop-blur-sm hover:bg-white/10;
   }
 
   .btn-outline {
-    @apply btn border border-border text-ink-heading hover:bg-surface-light;
+    @apply btn border border-border text-ink-heading hover:border-primary/30 hover:bg-primary/5 hover:text-primary;
   }
 
   .card {
-    @apply rounded-card border border-border bg-white transition-shadow duration-150 hover:shadow-md;
+    @apply rounded-2xl border border-border bg-white transition-all duration-200 hover:shadow-lg;
   }
 
   .field-label {
@@ -70,6 +72,6 @@
   }
 
   .field-input {
-    @apply w-full rounded-card border border-border bg-white px-4 py-2.5 text-sm text-ink-heading placeholder:text-ink-body focus:border-primary;
+    @apply w-full rounded-lg border border-border bg-white px-4 py-2.5 text-sm text-ink-heading placeholder:text-ink-body/60 transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20;
   }
 }

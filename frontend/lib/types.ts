@@ -82,6 +82,7 @@ export interface PartnerSuccessStory {
   quote: string;
   metricValue: string;
   metricLabel: string;
+  logoUrl?: string;
 }
 
 export interface Alumni {

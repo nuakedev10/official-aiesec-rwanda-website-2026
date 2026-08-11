@@ -34,7 +34,7 @@ export default async function ForYouthPage() {
         </div>
         <div className="container-page relative max-w-2xl py-24">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Shape Your Future Through <span className="text-accent-yellow">Global Experiences</span>
+            Shape Your Future Through <span className="text-white">Global Experiences</span>
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-blue-50">
             Join thousands of young Rwandans who have grown their leadership through

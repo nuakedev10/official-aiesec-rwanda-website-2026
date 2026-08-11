@@ -62,13 +62,13 @@ export default async function HomePage() {
 
         <div className="container-page relative z-10 py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-accent-yellow ring-1 ring-inset ring-white/20 backdrop-blur-sm sm:px-4 sm:py-1.5 sm:text-xs">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-white ring-1 ring-inset ring-white/20 backdrop-blur-sm sm:px-4 sm:py-1.5 sm:text-xs">
               <IconSparkles size={14} />
               Youth-Led Since 2007
             </span>
             <h1 className="mt-4 text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:mt-6 sm:text-5xl lg:text-6xl">
               Develop Leaders for a{' '}
-              <span className="text-accent-yellow">Better Rwanda</span>
+              <span className="text-white underline decoration-primary decoration-4 underline-offset-4">Better Rwanda</span>
             </h1>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:mt-6 sm:text-lg lg:text-xl">
               AIESEC in Rwanda builds the next generation of leaders through international
@@ -183,12 +183,13 @@ export default async function HomePage() {
               Learn Our Story
             </Link>
           </div>
-          <div className="relative h-80 w-full overflow-hidden rounded-2xl shadow-xl sm:h-[420px]">
+          <div className="relative w-full overflow-hidden rounded-2xl shadow-xl">
             <Image
               src="/images/hero/home-hero.png"
               alt="AIESEC in Rwanda members in a leadership training session"
-              fill
-              className="object-cover"
+              width={1920}
+              height={1080}
+              className="h-auto w-full object-contain"
               sizes="(min-width: 1024px) 50vw, 100vw"
             />
           </div>

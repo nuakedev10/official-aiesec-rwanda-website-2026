@@ -5,12 +5,48 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const NAV_LINKS = [
+interface NavItem {
+  href: string;
+  label: string;
+  children?: { href: string; label: string; description: string }[];
+}
+
+const NAV_LINKS: NavItem[] = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/for-youth', label: 'For Youth' },
-  { href: '/for-partners', label: 'For Partners' },
-  { href: '/alumni', label: 'Alumni' },
+  {
+    href: '/about',
+    label: 'About',
+    children: [
+      { href: '/about', label: 'Our Story', description: 'Learn about AIESEC in Rwanda\'s mission and history' },
+      { href: '/about#team', label: 'Our Team', description: 'Meet the people behind AIESEC in Rwanda' },
+      { href: '/contact', label: 'Contact Us', description: 'Get in touch with our team' },
+    ],
+  },
+  {
+    href: '/for-youth',
+    label: 'For Youth',
+    children: [
+      { href: '/for-youth', label: 'Programs Overview', description: 'Explore all youth exchange programs' },
+      { href: '/for-youth#choose-your-path', label: 'Global Volunteer', description: 'Incoming and outgoing volunteer exchanges' },
+      { href: '/get-involved', label: 'Become a Member', description: 'Join AIESEC in Rwanda as a member' },
+    ],
+  },
+  {
+    href: '/for-partners',
+    label: 'For Partners',
+    children: [
+      { href: '/for-partners', label: 'Partnership Opportunities', description: 'Explore how to partner with us' },
+      { href: '/for-partners#get-in-touch', label: 'Get in Touch', description: 'Contact our partnerships team' },
+    ],
+  },
+  {
+    href: '/alumni',
+    label: 'Alumni',
+    children: [
+      { href: '/alumni', label: 'Alumni Directory', description: 'Connect with fellow AIESEC alumni' },
+      { href: '/stories', label: 'Success Stories', description: 'Read stories from our community' },
+    ],
+  },
   { href: '/stories', label: 'Stories' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -19,9 +55,11 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
 
   useEffect(() => {
     setOpen(false);
+    setExpandedMobile(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -54,18 +92,40 @@ export default function Header() {
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
               return (
-                <li key={link.href}>
+                <li key={link.href} className="group relative">
                   <Link
                     href={link.href}
                     aria-current={active ? 'page' : undefined}
-                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       active
                         ? 'bg-primary/8 text-primary'
                         : 'text-ink-heading hover:bg-surface-light hover:text-primary'
                     }`}
                   >
                     {link.label}
+                    {link.children && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="ml-0.5 transition-transform group-hover:rotate-180" aria-hidden>
+                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                   </Link>
+
+                  {link.children && (
+                    <div className="pointer-events-none invisible absolute left-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100">
+                      <div className="w-72 rounded-xl border border-border bg-white p-2 shadow-lg">
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-surface-light"
+                          >
+                            <span className="block text-sm font-medium text-ink-heading">{child.label}</span>
+                            <span className="mt-0.5 block text-xs text-ink-body">{child.description}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </li>
               );
             })}
@@ -105,25 +165,70 @@ export default function Header() {
         </div>
       </div>
 
+      {/* Mobile nav */}
       <div
         id="mobile-nav"
         className={`overflow-hidden border-b bg-white transition-[max-height] duration-300 lg:hidden ${
-          open ? 'max-h-[28rem] border-border' : 'max-h-0 border-transparent'
+          open ? 'max-h-[36rem] border-border' : 'max-h-0 border-transparent'
         }`}
       >
         <nav aria-label="Mobile navigation" className="container-page flex flex-col gap-1 py-4">
           {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                pathname === link.href
-                  ? 'bg-primary/8 text-primary'
-                  : 'text-ink-heading hover:bg-surface-light'
-              }`}
-            >
-              {link.label}
-            </Link>
+            <div key={link.href}>
+              {link.children ? (
+                <>
+                  <button
+                    type="button"
+                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                      pathname === link.href
+                        ? 'bg-primary/8 text-primary'
+                        : 'text-ink-heading hover:bg-surface-light'
+                    }`}
+                    onClick={() => setExpandedMobile(expandedMobile === link.href ? null : link.href)}
+                  >
+                    {link.label}
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      className={`transition-transform ${expandedMobile === link.href ? 'rotate-180' : ''}`}
+                      aria-hidden
+                    >
+                      <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-[max-height] duration-200 ${
+                      expandedMobile === link.href ? 'max-h-60' : 'max-h-0'
+                    }`}
+                  >
+                    <div className="ml-3 border-l border-border pl-3">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className="block rounded-lg px-3 py-2 text-sm text-ink-body transition-colors hover:bg-surface-light hover:text-ink-heading"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <Link
+                  href={link.href}
+                  className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                    pathname === link.href
+                      ? 'bg-primary/8 text-primary'
+                      : 'text-ink-heading hover:bg-surface-light'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )}
+            </div>
           ))}
           <Link href="/get-involved" className="btn-blue mt-2 justify-center">
             Join Us

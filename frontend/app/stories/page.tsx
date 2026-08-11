@@ -58,6 +58,23 @@ export default async function StoriesPage() {
         </div>
       </section>
 
+      {/* Featured exchange photo */}
+      <section className="container-page py-16">
+        <div className="overflow-hidden rounded-2xl shadow-lg">
+          <Image
+            src="/images/stories/Exchange_Photo.jpeg"
+            alt="Japanese exchange students being received at Kigali Airport by AIESEC Rwanda exchange buddies"
+            width={1920}
+            height={1080}
+            className="h-auto w-full object-contain"
+            sizes="100vw"
+          />
+        </div>
+        <p className="mt-4 text-center text-sm text-ink-body">
+          Japanese exchange students arriving at Kigali International Airport, welcomed by their AIESEC in Rwanda exchange buddies.
+        </p>
+      </section>
+
       {/* Stories grid — images are portrait (1170×1463), show them fully */}
       <section id="stories" className="container-page py-24">
         <SectionHeading eyebrow="From Our Community" title="Exchange Diaries & Leadership Stories" />

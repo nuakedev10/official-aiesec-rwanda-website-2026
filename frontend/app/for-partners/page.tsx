@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { getPartnershipOpportunities, getPartnerSuccessStories } from '@/lib/api';
 import SectionHeading from '@/components/SectionHeading';
@@ -118,9 +119,20 @@ export default async function ForPartnersPage() {
       <section className="bg-surface-light py-20">
         <div className="container-page">
           <SectionHeading eyebrow="Proven Results" title="Success Stories" />
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {stories.map((story) => (
               <div key={story.id} className="card p-8 text-center">
+                {story.logoUrl && (
+                  <div className="mb-4 flex h-12 items-center justify-center">
+                    <Image
+                      src={story.logoUrl}
+                      alt={story.companyName}
+                      width={120}
+                      height={48}
+                      className="h-10 w-auto object-contain"
+                    />
+                  </div>
+                )}
                 <p className="text-4xl font-bold text-primary">{story.metricValue}</p>
                 <p className="mt-2 text-sm font-medium text-ink-body">{story.metricLabel}</p>
                 <p className="mt-5 text-sm italic leading-relaxed text-ink-heading">
@@ -146,13 +158,13 @@ export default async function ForPartnersPage() {
             />
             <ul className="space-y-4 text-sm text-gray-300">
               <li className="flex items-center gap-3">
-                <IconPhone size={18} className="text-accent-yellow" /> +250 788 000 000
+                <IconPhone size={18} className="text-primary" /> +250 788 000 000
               </li>
               <li className="flex items-center gap-3">
-                <IconMail size={18} className="text-accent-yellow" /> partnerships@aiesecrwanda.org
+                <IconMail size={18} className="text-primary" /> partnerships@aiesecrwanda.org
               </li>
               <li className="flex items-center gap-3">
-                <IconLocation size={18} className="text-accent-yellow" /> Kigali, Rwanda
+                <IconLocation size={18} className="text-primary" /> Kigali, Rwanda
               </li>
             </ul>
           </div>

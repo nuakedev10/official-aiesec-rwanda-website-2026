@@ -125,9 +125,10 @@ export const fallbackPartnerOpportunities: PartnershipOpportunity[] = [
 ];
 
 export const fallbackPartnerStories: PartnerSuccessStory[] = [
-  { id: '1', companyName: 'Bank of Kigali', quote: 'Hosted 12 international interns across two years.', metricValue: '40%', metricLabel: 'Faster onboarding of junior talent' },
-  { id: '2', companyName: 'Zipline Rwanda', quote: 'Built a pipeline of globally-minded engineering talent.', metricValue: '3x', metricLabel: 'Growth in youth applicant pool' },
-  { id: '3', companyName: 'Kigali Innovation City', quote: 'Co-hosted national youth leadership summits.', metricValue: '25+', metricLabel: 'Partner events co-organized' },
+  { id: '1', companyName: 'Bank of Kigali', quote: 'Hosted 12 international interns across two years.', metricValue: '40%', metricLabel: 'Faster onboarding of junior talent', logoUrl: '/images/partners/bank-of-kigali-logo.png' },
+  { id: '2', companyName: 'Zipline Rwanda', quote: 'Built a pipeline of globally-minded engineering talent.', metricValue: '3x', metricLabel: 'Growth in youth applicant pool', logoUrl: '/images/partners/zipline-logo.png' },
+  { id: '3', companyName: 'Rwanda Stock Exchange', quote: 'Partnered on financial literacy workshops for youth across Rwanda.', metricValue: '15+', metricLabel: 'Youth financial literacy sessions', logoUrl: '/images/partners/Rwanda_Stock_Exchange_logo.png' },
+  { id: '4', companyName: 'University of Rwanda', quote: 'Co-created leadership development curricula for students.', metricValue: '500+', metricLabel: 'Students engaged annually', logoUrl: '/images/partners/university_of_rwanda_logo.jpg' },
 ];
 
 export const fallbackAlumniStories: AlumniSuccessStory[] = [

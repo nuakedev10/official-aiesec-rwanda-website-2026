@@ -137,7 +137,7 @@ export default async function AboutPage() {
             <div className="flex flex-wrap gap-8">
               {stats.map((stat) => (
                 <div key={stat.id}>
-                  <p className="text-3xl font-bold text-accent-yellow">{stat.value}</p>
+                  <p className="text-3xl font-bold text-white">{stat.value}</p>
                   <p className="mt-1 text-sm text-gray-300">{stat.label}</p>
                 </div>
               ))}

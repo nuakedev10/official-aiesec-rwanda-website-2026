@@ -47,7 +47,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero — full-width video background */}
-      <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-surface-dark">
+      <section className="relative flex min-h-[60vh] items-center overflow-hidden bg-surface-dark sm:min-h-[70vh] lg:min-h-[80vh]">
         <video
           className="absolute inset-0 h-full w-full object-cover"
           src="/videos/home-hero.mp4"
@@ -58,38 +58,38 @@ export default async function HomePage() {
           preload="metadata"
           aria-label="AIESEC in Rwanda youth volunteers and members in action"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/40 sm:bg-gradient-to-r sm:from-black/75 sm:via-black/55 sm:to-black/30" />
 
-        <div className="container-page relative z-10 py-24 lg:py-32">
+        <div className="container-page relative z-10 py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-accent-yellow ring-1 ring-inset ring-white/20 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-accent-yellow ring-1 ring-inset ring-white/20 backdrop-blur-sm sm:px-4 sm:py-1.5 sm:text-xs">
               <IconSparkles size={14} />
               Youth-Led Since 2007
             </span>
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="mt-4 text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:mt-6 sm:text-5xl lg:text-6xl">
               Develop Leaders for a{' '}
               <span className="text-accent-yellow">Better Rwanda</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85 sm:text-xl">
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:mt-6 sm:text-lg lg:text-xl">
               AIESEC in Rwanda builds the next generation of leaders through international
               internships, volunteer exchanges, and hands-on leadership development — for youth,
               partners, and communities across the country.
             </p>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link href="/get-involved" className="btn-primary text-base">
+            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+              <Link href="/get-involved" className="btn-primary text-center text-base">
                 Start Your Journey
               </Link>
-              <Link href="/for-partners" className="btn-outline-white text-base">
+              <Link href="/for-partners" className="btn-outline-white text-center text-base">
                 Partner With Us
               </Link>
             </div>
 
-            <dl className="mt-14 grid max-w-lg grid-cols-3 gap-8 border-t border-white/20 pt-8">
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-white/20 pt-6 sm:mt-14 sm:gap-8 sm:pt-8">
               {stats.slice(0, 3).map((stat) => (
                 <div key={stat.id}>
                   <dt className="sr-only">{stat.label}</dt>
-                  <dd className="text-3xl font-extrabold text-white sm:text-4xl">{stat.value}</dd>
-                  <dd className="mt-1 text-xs font-medium text-white/70 sm:text-sm">{stat.label}</dd>
+                  <dd className="text-2xl font-extrabold text-white sm:text-3xl lg:text-4xl">{stat.value}</dd>
+                  <dd className="mt-1 text-[11px] font-medium text-white/70 sm:text-sm">{stat.label}</dd>
                 </div>
               ))}
             </dl>
